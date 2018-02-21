@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputPath>..\Sunflower.App.Server\bin\Debug\netcoreapp2.0</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sunflower.Data.Contracts\Sunflower.Data.Contracts.csproj" />
+    <ProjectReference Include="..\Sunflower.Data\Sunflower.Data.csproj" />
+    <ProjectReference Include="..\Sunflower.Entities\Sunflower.Entities.csproj" />
+  </ItemGroup>
+
+</Project>
