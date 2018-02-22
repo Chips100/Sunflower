@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Setup\StockList.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Setup\StockList.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Sunflower.Business.Contracts\Sunflower.Business.Contracts.csproj" />
     <ProjectReference Include="..\Sunflower.Data.Contracts\Sunflower.Data.Contracts.csproj" />
     <ProjectReference Include="..\Sunflower.Entities\Sunflower.Entities.csproj" />

@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Sunflower.Data.Contracts;
-using Sunflower.Entities;
 
 namespace Sunflower.Data.Autofac
 {
@@ -11,7 +10,7 @@ namespace Sunflower.Data.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<EntityRepository<Account>>().As<IEntityRepository<Account>>();
+            builder.RegisterGeneric(typeof(EntityRepository<>)).As(typeof(IEntityRepository<>));
             builder.RegisterType<SunflowerStorageCreator>().As<IStorageCreator>();
         }
     }

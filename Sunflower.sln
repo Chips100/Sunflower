@@ -3,25 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.App.Server", "Sunflower.App.Server\Sunflower.App.Server.csproj", "{74A34D4A-72A8-4EFC-9AE9-863DCE8C3CC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.App.Server", "Sunflower.App.Server\Sunflower.App.Server.csproj", "{74A34D4A-72A8-4EFC-9AE9-863DCE8C3CC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Entities", "Sunflower.Entities\Sunflower.Entities.csproj", "{F56C5D53-4542-4D7A-B7E1-9E2803EE4114}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Entities", "Sunflower.Entities\Sunflower.Entities.csproj", "{F56C5D53-4542-4D7A-B7E1-9E2803EE4114}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Data.Contracts", "Sunflower.Data.Contracts\Sunflower.Data.Contracts.csproj", "{3946174B-EDC8-4801-BFEA-9393DAF54A01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Data.Contracts", "Sunflower.Data.Contracts\Sunflower.Data.Contracts.csproj", "{3946174B-EDC8-4801-BFEA-9393DAF54A01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Data", "Sunflower.Data\Sunflower.Data.csproj", "{338388C0-541B-4047-8332-939D260D632F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Data", "Sunflower.Data\Sunflower.Data.csproj", "{338388C0-541B-4047-8332-939D260D632F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Data.Autofac", "Sunflower.Data.Autofac\Sunflower.Data.Autofac.csproj", "{1BD1D932-2BEA-43D8-9EAD-357B62F5183C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Data.Autofac", "Sunflower.Data.Autofac\Sunflower.Data.Autofac.csproj", "{1BD1D932-2BEA-43D8-9EAD-357B62F5183C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Business.Contracts", "Sunflower.Business.Contracts\Sunflower.Business.Contracts.csproj", "{3D92BE3F-39E0-43D1-8A6A-8CB5B4C91459}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Business.Contracts", "Sunflower.Business.Contracts\Sunflower.Business.Contracts.csproj", "{3D92BE3F-39E0-43D1-8A6A-8CB5B4C91459}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Business", "Sunflower.Business\Sunflower.Business.csproj", "{A08C2DC8-278F-4216-88BD-7246F304F62F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Business", "Sunflower.Business\Sunflower.Business.csproj", "{A08C2DC8-278F-4216-88BD-7246F304F62F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Business.Autofac", "Sunflower.Business.Autofac\Sunflower.Business.Autofac.csproj", "{46584E28-4162-4392-BF1C-9029785EE0F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Business.Autofac", "Sunflower.Business.Autofac\Sunflower.Business.Autofac.csproj", "{46584E28-4162-4392-BF1C-9029785EE0F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Business.Tests", "Sunflower.Business.Tests\Sunflower.Business.Tests.csproj", "{BFC626AD-CDE1-4A34-BD26-30548C24A6D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Business.Tests", "Sunflower.Business.Tests\Sunflower.Business.Tests.csproj", "{BFC626AD-CDE1-4A34-BD26-30548C24A6D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.App.Server.Tests", "Sunflower.App.Server.Tests\Sunflower.App.Server.Tests.csproj", "{9F094F56-1317-4D42-860F-68175CAD46D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.App.Server.Tests", "Sunflower.App.Server.Tests\Sunflower.App.Server.Tests.csproj", "{9F094F56-1317-4D42-860F-68175CAD46D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Finance.Contracts", "Sunflower.Finance.Contracts\Sunflower.Finance.Contracts.csproj", "{C5E47317-A075-49C6-ABF4-981DAD23E516}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Finance", "Sunflower.Finance\Sunflower.Finance.csproj", "{0CE4F457-1CF4-45E5-8B1A-6CA9CC50D274}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Finance.Autofac", "Sunflower.Finance.Autofac\Sunflower.Finance.Autofac.csproj", "{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +75,18 @@ Global
 		{9F094F56-1317-4D42-860F-68175CAD46D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F094F56-1317-4D42-860F-68175CAD46D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F094F56-1317-4D42-860F-68175CAD46D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5E47317-A075-49C6-ABF4-981DAD23E516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5E47317-A075-49C6-ABF4-981DAD23E516}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5E47317-A075-49C6-ABF4-981DAD23E516}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5E47317-A075-49C6-ABF4-981DAD23E516}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CE4F457-1CF4-45E5-8B1A-6CA9CC50D274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CE4F457-1CF4-45E5-8B1A-6CA9CC50D274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CE4F457-1CF4-45E5-8B1A-6CA9CC50D274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CE4F457-1CF4-45E5-8B1A-6CA9CC50D274}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
