@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Sunflower.Business.Contracts;
-using Sunflower.Business.Setup;
 
 namespace Sunflower.Business.Autofac
 {
@@ -13,7 +12,7 @@ namespace Sunflower.Business.Autofac
         {
             builder.RegisterType<AccountService>().As<IAccountService>();
             builder.RegisterType<StorageCreator>().As<IStorageCreator>();
-            builder.RegisterType<StockListInitializer>();
+            builder.RegisterType<StockImportService>().As<IStockImportService>();
         }
     }
 }

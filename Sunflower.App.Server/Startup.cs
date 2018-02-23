@@ -77,6 +77,9 @@ namespace Sunflower.App
             // Create the persistent storage on Startup.
             var storageCreator = app.ApplicationServices.GetService<IStorageCreator>();
             storageCreator.EnsureCreated().Wait();
+
+            var x = app.ApplicationServices.GetService<IStockImportService>();
+            x.ImportStocks();
         }
     }
 }

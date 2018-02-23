@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Sunflower.Entities\Sunflower.Entities.csproj" />
     <ProjectReference Include="..\Sunflower.Finance.Contracts\Sunflower.Finance.Contracts.csproj" />
   </ItemGroup>
 
