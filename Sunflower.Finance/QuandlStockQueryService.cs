@@ -1,9 +1,7 @@
 ﻿using Sunflower.Entities;
 using Sunflower.Finance.Contracts;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Sunflower.Finance
@@ -14,7 +12,12 @@ namespace Sunflower.Finance
     /// </summary>
     public class QuandlStockQueryService : IStockQueryService
     {
-        private readonly QuandlCodesReader _quandlCodesReader = new QuandlCodesReader();
+        private QuandlCodesProvider _quandlCodesProvider;
+
+        public QuandlStockQueryService(QuandlCodesProvider quandlCodesProvider)
+        {
+            _quandlCodesProvider = quandlCodesProvider;
+        }
 
         /// <summary>
         /// Returns a complete list of all currently available stocks.
@@ -22,27 +25,11 @@ namespace Sunflower.Finance
         /// <returns>A task that will complete with the list of stocks.</returns>
         public async Task<IEnumerable<Stock>> QueryAll()
         {
-            // For now, take list from a provided file in the file system.
-            var quandlCodeListFileName = @"SSE-datasets-codes.csv";
-
-            // Create StreamReader from local file.
-            using (var fileStream = File.OpenRead(quandlCodeListFileName))
-            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            return _quandlCodesProvider.Values.Select(x => new Stock
             {
-                // Parse file contents.
-                var itemsFromFile = await _quandlCodesReader.Read(streamReader);
-
-                return itemsFromFile
-                    // Eliminate duplicate ISIN entries.
-                    .GroupBy(x => x.Isin)
-                    .Select(g => g.First())
-                    // Convert to Sunflower Stock Entities.
-                    .Select(x => new Stock
-                    {
-                        Isin = x.Isin,
-                        Name = x.Name
-                    });
-            }
+                Isin = x.Isin,
+                Name = x.Name
+            });
         }
     }
 }

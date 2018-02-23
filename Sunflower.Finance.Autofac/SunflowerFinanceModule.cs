@@ -12,6 +12,7 @@ namespace Sunflower.Finance.Autofac
         {
             builder.RegisterType<QuandlStockInfoService>().As<IStockInfoService>();
             builder.RegisterType<QuandlStockQueryService>().As<IStockQueryService>();
+            builder.RegisterType<QuandlCodesProvider>().SingleInstance();
         }
     }
 }

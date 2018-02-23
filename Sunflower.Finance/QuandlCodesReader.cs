@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Sunflower.Finance
 {
@@ -38,13 +37,13 @@ namespace Sunflower.Finance
         /// </summary>
         /// <param name="reader">StreamReader used to read the Quandl Code File.</param>
         /// <returns>A task that will complete with the list of parsed entries.</returns>
-        public async Task<IEnumerable<QuandlCodeItem>> Read(StreamReader reader)
+        public IEnumerable<QuandlCodeItem> Read(StreamReader reader)
         {
             var result = new List<QuandlCodeItem>();
             string line = null;
 
             // Continue while lines are left to read.
-            while ((line = await ReadLine(reader)) != null)
+            while ((line = ReadLine(reader)) != null)
             {
                 // Parse values and ISIN from line.
                 var (code, name) = ReadValuesFromLine(line);
@@ -105,14 +104,14 @@ namespace Sunflower.Finance
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
-        private async Task<string> ReadLine(StreamReader reader)
+        private string ReadLine(StreamReader reader)
         {
             var totalLine = string.Empty;
             string line = null;
 
             // Concatenate multiple lines as long as unclosed
             // escape characters are present (escapes the linebreak).
-            while ((line = await reader.ReadLineAsync()) != null)
+            while ((line = reader.ReadLine()) != null)
             {
                 totalLine += line;
                 if (totalLine.Count(c => c == EscapeCharacter) % 2 == 0)
@@ -129,27 +128,6 @@ namespace Sunflower.Finance
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Item parsed from the Quandl Code File.
-        /// </summary>
-        public class QuandlCodeItem
-        {
-            /// <summary>
-            /// Database code of the item.
-            /// </summary>
-            public string DatabaseCode { get; set; }
-
-            /// <summary>
-            /// ISIN of the item.
-            /// </summary>
-            public string Isin { get; set; }
-
-            /// <summary>
-            /// Name of the database.
-            /// </summary>
-            public string Name { get; set; }
         }
     }
 }

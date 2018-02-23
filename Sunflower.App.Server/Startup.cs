@@ -21,6 +21,7 @@ namespace Sunflower.App
             Configuration = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.secret.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
@@ -35,6 +36,7 @@ namespace Sunflower.App
             services.AddAuthentication().AddCookie();
             services.AddMvc();
             services.AddCors();
+            services.AddSingleton<IConfiguration>(Configuration);
 
             // Manual assembly scanning, as Autofac does not
             // respect DotNetCore environment.
@@ -77,9 +79,6 @@ namespace Sunflower.App
             // Create the persistent storage on Startup.
             var storageCreator = app.ApplicationServices.GetService<IStorageCreator>();
             storageCreator.EnsureCreated().Wait();
-
-            var x = app.ApplicationServices.GetService<IStockImportService>();
-            x.ImportStocks();
         }
     }
 }

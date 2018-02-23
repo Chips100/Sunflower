@@ -288,3 +288,4 @@ __pycache__/
 *.xsd.cs
 *.db
 /Sunflower.App.Server/SSE-datasets-codes.csv
+/Sunflower.App.Server/appSettings.secret.json
