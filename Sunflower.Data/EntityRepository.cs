@@ -38,12 +38,13 @@ namespace Sunflower.Data
         /// <param name="entity">Entity to store.</param>
         /// <returns>A Task that will complete when the entity has been stored.</returns>
         /// <remarks>Generates and assigns a new id to the entity.</remarks>
-        public async Task Create(T entity)
+        public async Task<T> Create(T entity)
         {
             using (var context = CreateContext())
             {
                 context.Set<T>().Add(entity);
                 await context.SaveChangesAsync();
+                return entity;
             }
         }
 

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Sunflower.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Sunflower.Business.Contracts
 {
@@ -7,6 +9,13 @@ namespace Sunflower.Business.Contracts
     /// </summary>
     public interface IStockService
     {
+        /// <summary>
+        /// Searches for stocks matching the specified search term.
+        /// </summary>
+        /// <param name="searchTerm">Term to use for matching stocks.</param>
+        /// <returns>A task that will complete with the matched stocks.</returns>
+        Task<IEnumerable<Stock>> SearchStocks(string searchTerm);
+
         /// <summary>
         /// Transfers shares of a stock to the specified account.
         /// </summary>

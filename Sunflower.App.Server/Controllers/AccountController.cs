@@ -62,7 +62,8 @@ namespace Sunflower.App.Server.Controllers
 
             if (!await CheckPassword(email, oldPassword)) return false;
 
-            await _accountService.ChangePassword(email, newPassword);
+            var account = await _accountService.GetAccountByEmail(email);
+            await _accountService.ChangePassword(account.Id, newPassword);
             return true;
         }
 

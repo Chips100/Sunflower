@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sunflower.App.Server.Controllers;
 using Sunflower.App.Server.Tests.Mocks;
+using Sunflower.Entities;
 using System.Threading.Tasks;
 
 namespace Sunflower.App.Server.Tests.Controllers.api
@@ -73,14 +74,20 @@ namespace Sunflower.App.Server.Tests.Controllers.api
         {
             var email = "test@test.de";
             var password = "testpassword";
-            var accountService = new AccountServiceMock() { CheckAccountPasswordResult = true };
+            var accountId = 42;
+            var accountService = new AccountServiceMock()
+            {
+                CheckAccountPasswordResult = true,
+                GetAccountByEmailAccount = new Account { Id = accountId, EmailAddress = email }
+            };
+
             var authenticatorProvider = new AuthenticatorProviderMock() { Email = email };
             var sut = new AccountController(accountService, authenticatorProvider);
 
             var result = await sut.ChangePassword("oldPassword", password);
 
             Assert.IsTrue(result, "result");
-            Assert.AreEqual(email, accountService.ChangedEmail, "accountService.ChangedEmail");
+            Assert.AreEqual(accountId, accountService.ChangedAccountId, "accountService.ChangedAccountId");
             Assert.AreEqual(password, accountService.ChangedPassword, "accountService.ChangedPassword");
         }
 
@@ -100,7 +107,7 @@ namespace Sunflower.App.Server.Tests.Controllers.api
             var result = await sut.ChangePassword("oldPassword", password);
 
             Assert.IsFalse(result, "result");
-            Assert.IsNull(accountService.ChangedEmail, "accountService.ChangedEmail");
+            Assert.IsNull(accountService.ChangedAccountId, "accountService.ChangedEmail");
             Assert.IsNull(accountService.ChangedPassword, "accountService.ChangedPassword");
         }
     }

@@ -15,14 +15,16 @@ namespace Sunflower.Business
     public class AccountService : IAccountService
     {
         private readonly IEntityRepository<Account> _accountRepository;
+        private readonly IEntityRepository<ContextFreeTransaction> _contextFreeTransactionRepository;
 
         /// <summary>
         /// Creates an AccountService.
         /// </summary>
         /// <param name="accountRepository">Repository to access stored account entities.</param>
-        public AccountService(IEntityRepository<Account> accountRepository)
+        public AccountService(IEntityRepository<Account> accountRepository, IEntityRepository<ContextFreeTransaction> contextFreeTransactionRepository)
         {
             _accountRepository = accountRepository;
+            _contextFreeTransactionRepository = contextFreeTransactionRepository;
         }
 
         /// <summary>
@@ -31,9 +33,9 @@ namespace Sunflower.Business
         /// <param name="email">E-Mail Address of the account of which to change the password.</param>
         /// <param name="newPassword">Password that should be used for the account.</param>
         /// <returns>A Task that will complete when the password has been changed.</returns>
-        public async Task ChangePassword(string email, string newPassword)
+        public async Task ChangePassword(int accountId, string newPassword)
         {
-            var account = await GetAccountByEmail(email);
+            var account = await _accountRepository.GetById(accountId);
             var hashedPassword = HashedPassword.CreateFromPlainPassword(newPassword);
 
             await _accountRepository.Change(account.Id, a =>
@@ -53,7 +55,7 @@ namespace Sunflower.Business
         {
             // A non-existing account for the email will be treated as a normal
             // failed password check to not disclose the information about the existence.
-            var account = await GetAccountByEmail(email, false);
+            var account = await GetAccountByEmail(email, suppressException: true);
             if (account == null)
             {
                 return false;
@@ -72,36 +74,51 @@ namespace Sunflower.Business
         public async Task CreateAccount(string email, string password)
         {
             // Check if email address is already used.
-            var account = await GetAccountByEmail(email, false);
-            if (account != null)
+            if ((await GetAccountByEmail(email, suppressException: true)) != null)
             {
                 throw new EmailAlreadyRegisteredException(email);
             }
 
             // If not, create new account.
             var hashedPassword = HashedPassword.CreateFromPlainPassword(password);
-
-            await _accountRepository.Create(new Account()
+            var account = await _accountRepository.Create(new Account()
             {
                 EmailAddress = email,
                 PasswordHash = hashedPassword.Hash,
                 PasswordSalt = hashedPassword.Salt
             });
-        }
 
+            // Provide some starting budget for the new account.
+            await _contextFreeTransactionRepository.Create(new ContextFreeTransaction()
+            {
+                AccountId = account.Id,
+                Comment = "Initial",
+                Amount = 10000,
+                TransactionTimestamp = DateTime.UtcNow
+            });
+        }
+        
         /// <summary>
         /// Gets an account by its email address.
         /// </summary>
         /// <param name="email">email address of the account to get.</param>
-        /// <param name="throwIfNotFound">If true, no exception will be thrown if the account could not be found.</param>
+        /// <returns>The account with the specified email address.</returns>
+        public Task<Account> GetAccountByEmail(string email)
+            => GetAccountByEmail(email, false);
+        
+        /// <summary>
+        /// Gets an account by its email address.
+        /// </summary>
+        /// <param name="email">email address of the account to get.</param>
+        /// <param name="suppressException">If true, no exception will be thrown if the account could not be found.</param>
         /// <returns>The account with the specified email address; or null if it does not exist.</returns>
         /// <exception cref="EmailNotRegisteredException">Thrown if the account could not be found.</exception>
-        private async Task<Account> GetAccountByEmail(string email, bool throwIfNotFound = true)
+        private async Task<Account> GetAccountByEmail(string email, bool suppressException)
         {
             var account = await _accountRepository.QueryFirstOrDefault(q => q
                 .Where(a => string.Equals(a.EmailAddress, email, StringComparison.OrdinalIgnoreCase)));
 
-            if (throwIfNotFound && account == null)
+            if (!suppressException && account == null)
             {
                 throw new EmailNotRegisteredException(email);
             }

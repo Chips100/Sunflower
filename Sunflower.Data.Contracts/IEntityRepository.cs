@@ -26,9 +26,9 @@ namespace Sunflower.Data.Contracts
         /// Stores a new entity in the persistent storage.
         /// </summary>
         /// <param name="entity">Entity to store.</param>
-        /// <returns>A Task that will complete when the entity has been stored.</returns>
+        /// <returns>A Task that will complete with the stored entity.</returns>
         /// <remarks>Generates and assigns a new id to the entity.</remarks>
-        Task Create(TEntity entity);
+        Task<TEntity> Create(TEntity entity);
 
         /// <summary>
         /// Deletes the entity with the specified identifier.

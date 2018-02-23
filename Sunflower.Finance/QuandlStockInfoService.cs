@@ -2,6 +2,7 @@
 using Sunflower.Entities;
 using Sunflower.Finance.Contracts;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Sunflower.Finance
     public sealed class QuandlStockInfoService : IStockInfoService
     {
         /// <summary>
-        /// 
+        /// Name of the column which holds the closing value we are interested in.
         /// </summary>
         private const string LastColumnName = "Last";
 
@@ -24,6 +25,11 @@ namespace Sunflower.Finance
         private readonly string _quandlStockValueUrlFormat;
         private QuandlCodesProvider _quandlCodesProvider;
 
+        /// <summary>
+        /// Creates a QuandlStockInfoService.
+        /// </summary>
+        /// <param name="configuration">Configuration with Quandl API parameters.</param>
+        /// <param name="quandlCodesProvider">Underlying provider with list of available stock databases.</param>
         public QuandlStockInfoService(IConfiguration configuration, QuandlCodesProvider quandlCodesProvider)
         {
             _quandlApiKey = configuration["QuandlApiKey"];
@@ -50,6 +56,11 @@ namespace Sunflower.Finance
             }
         }
 
+        /// <summary>
+        /// Extracts the closing value information from the XML-Response from Quandl.
+        /// </summary>
+        /// <param name="xmlResponse">String with the XML-Response from Quandl.</param>
+        /// <returns>The closing value.</returns>
         private decimal GetValueFromXmlResponse(string xmlResponse)
         {
             var xml = XDocument.Parse(xmlResponse);
@@ -69,7 +80,7 @@ namespace Sunflower.Finance
                 .InDocumentOrder().ElementAt(columnIndex)
                 .Value;
 
-            return decimal.Parse(last);
+            return decimal.Parse(last, CultureInfo.InvariantCulture);
         }
     }
 }

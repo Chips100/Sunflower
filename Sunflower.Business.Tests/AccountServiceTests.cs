@@ -21,7 +21,8 @@ namespace Sunflower.Business.Tests
         public async Task AccountService_CreateAccount_CreatesAccount()
         {
             var accountRepository = new EntityRepositoryMock<Account>();
-            var sut = new AccountService(accountRepository);
+            var contextFreeTransactionRepository = new EntityRepositoryMock<ContextFreeTransaction>();
+            var sut = new AccountService(accountRepository, contextFreeTransactionRepository);
 
             await sut.CreateAccount("test@test.de", "testpassword");
 
@@ -37,7 +38,8 @@ namespace Sunflower.Business.Tests
         public async Task AccountService_CreateAccount_GeneratesPassword()
         {
             var accountRepository = new EntityRepositoryMock<Account>();
-            var sut = new AccountService(accountRepository);
+            var contextFreeTransactionRepository = new EntityRepositoryMock<ContextFreeTransaction>();
+            var sut = new AccountService(accountRepository, contextFreeTransactionRepository);
 
             await sut.CreateAccount("test@test.de", "testpassword");
 
@@ -45,6 +47,24 @@ namespace Sunflower.Business.Tests
             var hashedPassword = new HashedPassword(account.PasswordHash, account.PasswordSalt);
 
             Assert.IsTrue(hashedPassword.EqualsPlainPassword("testpassword"), "Password not set correctly.");
+        }
+        
+        /// <summary>
+        /// Tests the creation of an initial transaction for the starting budget.
+        /// </summary>
+        [TestMethod]
+        public async Task AccountService_CreateAccount_CreatesInitialTransaction()
+        {
+            var accountRepository = new EntityRepositoryMock<Account>();
+            var contextFreeTransactionRepository = new EntityRepositoryMock<ContextFreeTransaction>();
+            var sut = new AccountService(accountRepository, contextFreeTransactionRepository);
+
+            await sut.CreateAccount("test@test.de", "testpassword");
+
+            var account = accountRepository.Entities.Values.First();
+            var transaction = contextFreeTransactionRepository.Entities.Values.First();
+            Assert.AreEqual(account.Id, transaction.AccountId, "AccountId");
+            Assert.AreEqual(10000, transaction.Amount, "Amount");
         }
 
         /// <summary>
@@ -56,13 +76,14 @@ namespace Sunflower.Business.Tests
         [ExpectedException(typeof(EmailAlreadyRegisteredException))]
         public async Task AccountService_CreateAccount_ThrowsEmailAlreadyRegisteredException()
         {
+            var contextFreeTransactionRepository = new EntityRepositoryMock<ContextFreeTransaction>();
             var accountRepository = new EntityRepositoryMock<Account>(new Account
             {
                 Id = 1,
                 EmailAddress = "test@test.de"
             });
 
-            var sut = new AccountService(accountRepository);
+            var sut = new AccountService(accountRepository, contextFreeTransactionRepository);
             await sut.CreateAccount("test@test.de", "password");
         }
 
@@ -72,14 +93,15 @@ namespace Sunflower.Business.Tests
         [TestMethod]
         public async Task AccountService_ChangePassword_ChangesPassword()
         {
+            var contextFreeTransactionRepository = new EntityRepositoryMock<ContextFreeTransaction>();
             var accountRepository = new EntityRepositoryMock<Account>(new Account
             {
                 Id = 1,
                 EmailAddress = "test@test.de"
             });
 
-            var sut = new AccountService(accountRepository);
-            await sut.ChangePassword("test@test.de", "testpassword");
+            var sut = new AccountService(accountRepository, contextFreeTransactionRepository);
+            await sut.ChangePassword(1, "testpassword");
 
             var account = accountRepository.Entities.Values.First();
             var hashedPassword = new HashedPassword(account.PasswordHash, account.PasswordSalt);
@@ -90,21 +112,6 @@ namespace Sunflower.Business.Tests
         }
 
         /// <summary>
-        /// Tests that the appropriate exception is thrown when trying
-        /// to change the password of an account with an email address
-        /// that is not registered.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(EmailNotRegisteredException))]
-        public async Task AccountService_ChangePassword_ThrowsEmailNotRegisteredException()
-        {
-            var accountRepository = new EntityRepositoryMock<Account>();
-
-            var sut = new AccountService(accountRepository);
-            await sut.ChangePassword("test@test.de", "testpassword");
-        }
-
-        /// <summary>
         /// Tests if the AccountService correctly checks a given password
         /// against a stored pair of hash and salt.
         /// </summary>
@@ -112,6 +119,7 @@ namespace Sunflower.Business.Tests
         public async Task AccountService_CheckPassword_Success()
         {
             var hashedPassword = HashedPassword.CreateFromPlainPassword("testpassword");
+            var contextFreeTransactionRepository = new EntityRepositoryMock<ContextFreeTransaction>();
             var accountRepository = new EntityRepositoryMock<Account>(new Account
             {
                 Id = 1,
@@ -120,7 +128,7 @@ namespace Sunflower.Business.Tests
                 PasswordSalt = hashedPassword.Salt
             });
 
-            var sut = new AccountService(accountRepository);
+            var sut = new AccountService(accountRepository, contextFreeTransactionRepository);
             var result = await sut.CheckAccountPassword("test@test.de", "testpassword");
 
             Assert.AreEqual(true, result, "CheckPassword did not confirm correctness.");
@@ -133,6 +141,7 @@ namespace Sunflower.Business.Tests
         public async Task AccountService_CheckPassword_Fail()
         {
             var hashedPassword = HashedPassword.CreateFromPlainPassword("testpassword");
+            var contextFreeTransactionRepository = new EntityRepositoryMock<ContextFreeTransaction>();
             var accountRepository = new EntityRepositoryMock<Account>(new Account
             {
                 Id = 1,
@@ -141,7 +150,7 @@ namespace Sunflower.Business.Tests
                 PasswordSalt = hashedPassword.Salt
             });
 
-            var sut = new AccountService(accountRepository);
+            var sut = new AccountService(accountRepository, contextFreeTransactionRepository);
             var result = await sut.CheckAccountPassword("test@test.de", "somethingelse");
 
             Assert.AreEqual(false, result, "CheckPassword confirmed correctness.");
@@ -155,9 +164,10 @@ namespace Sunflower.Business.Tests
         public async Task AccountService_CheckPassword_Fail_NotExists()
         {
             var hashedPassword = HashedPassword.CreateFromPlainPassword("testpassword");
+            var contextFreeTransactionRepository = new EntityRepositoryMock<ContextFreeTransaction>();
             var accountRepository = new EntityRepositoryMock<Account>();
 
-            var sut = new AccountService(accountRepository);
+            var sut = new AccountService(accountRepository, contextFreeTransactionRepository);
             var result = await sut.CheckAccountPassword("test@test.de", "somethingelse");
 
             Assert.AreEqual(false, result, "CheckPassword confirmed correctness.");

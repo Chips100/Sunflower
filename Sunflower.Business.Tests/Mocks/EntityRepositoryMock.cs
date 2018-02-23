@@ -68,13 +68,13 @@ namespace Sunflower.Business.Tests.Mocks
         /// Stores a new entity in this Mockup.
         /// </summary>
         /// <param name="entity">Entity to store.</param>
-        /// <returns>A Task that will complete when the entity has been stored.</returns>
+        /// <returns>A Task that will complete with the stored entity.</returns>
         /// <remarks>Generates and assigns a new id to the entity.</remarks>
-        public Task Create(T entity)
+        public Task<T> Create(T entity)
         {
             entity.Id = IdSeedPosition++;
             Entities.Add(entity.Id, entity);
-            return Task.FromResult(0);
+            return Task.FromResult(entity);
         }
 
         /// <summary>

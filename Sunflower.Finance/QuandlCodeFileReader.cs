@@ -9,7 +9,7 @@ namespace Sunflower.Finance
     /// Parses Entries from a Quandl Code file that holds
     /// a list of available databases with their codes.
     /// </summary>
-    internal sealed class QuandlCodesReader
+    internal sealed class QuandlCodeFileReader
     {
         /// <summary>
         /// Characters used to seperate values.
@@ -64,7 +64,11 @@ namespace Sunflower.Finance
                 });
             }
 
-            return result;
+            return result
+                // Eliminate duplicate ISIN entries.
+                .GroupBy(x => x.Isin)
+                .Select(g => g.First())
+                .ToList();
         }
 
         /// <summary>

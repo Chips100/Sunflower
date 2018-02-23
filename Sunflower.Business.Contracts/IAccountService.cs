@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Sunflower.Entities;
+using System.Threading.Tasks;
 
 namespace Sunflower.Business.Contracts
 {
@@ -10,10 +11,10 @@ namespace Sunflower.Business.Contracts
         /// <summary>
         /// Changes the password of the specified account.
         /// </summary>
-        /// <param name="email">E-Mail Address of the account of which to change the password.</param>
+        /// <param name="accountId">ID of the account of which to change the password.</param>
         /// <param name="newPassword">Password that should be used for the account.</param>
         /// <returns>A Task that will complete when the password has been changed.</returns>
-        Task ChangePassword(string email, string newPassword);
+        Task ChangePassword(int accountId, string newPassword);
 
         /// <summary>
         /// Checks a password for the specified account.
@@ -30,5 +31,12 @@ namespace Sunflower.Business.Contracts
         /// <param name="password">Password of the account.</param>
         /// <returns>A Task that will complete when the account has been created.</returns>
         Task CreateAccount(string email, string password);
+
+        /// <summary>
+        /// Gets an account by its email address.
+        /// </summary>
+        /// <param name="email">email address of the account to get.</param>
+        /// <returns>The account with the specified email address.</returns>
+        Task<Account> GetAccountByEmail(string email);
     }
 }

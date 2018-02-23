@@ -1,16 +1,29 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace Sunflower.Finance
 {
+    /// <summary>
+    /// Provides access to the database entries stored in the Quandl code file.
+    /// </summary>
+    /// <remarks>
+    /// The Quandl code file is a file with a list of all
+    /// databases from the "Börse Stuttgart" data product.
+    /// Each database holds values for a single stock.
+    /// To update the file, download it from:
+    /// https://www.quandl.com/api/v3/databases/SSE/codes.json
+    /// </remarks>
     public sealed class QuandlCodesProvider
     {
-        private readonly QuandlCodesReader _quandlCodesReader = new QuandlCodesReader();
+        private readonly QuandlCodeFileReader _quandlCodesReader = new QuandlCodeFileReader();
         private readonly string _quandlCodeFilePath;
 
+        /// <summary>
+        /// Creates a QuandlCodesProvider.
+        /// </summary>
+        /// <param name="configuration">Configuration with the file path to the code file.</param>
         public QuandlCodesProvider(IConfiguration configuration)
         {
             _quandlCodeFilePath = configuration["QuandlCodeFilePath"];
@@ -18,6 +31,9 @@ namespace Sunflower.Finance
             Values = ReadAllItems();
         }
 
+        /// <summary>
+        /// Values found in the Quandl code file.
+        /// </summary>
         public IEnumerable<QuandlCodeItem> Values { get; }
 
         /// <summary>
@@ -31,12 +47,7 @@ namespace Sunflower.Finance
             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
             {
                 // Parse file contents.
-                var itemsFromFile = _quandlCodesReader.Read(streamReader);
-
-                return itemsFromFile
-                    // Eliminate duplicate ISIN entries.
-                    .GroupBy(x => x.Isin)
-                    .Select(g => g.First());
+                return _quandlCodesReader.Read(streamReader);
             }
         }
     }
