@@ -9,7 +9,7 @@ namespace Sunflower.Finance
     /// Parses Entries from a Quandl Code file that holds
     /// a list of available databases with their codes.
     /// </summary>
-    internal sealed class QuandlCodeFileReader
+    public sealed class QuandlCodeFileReader
     {
         /// <summary>
         /// Characters used to seperate values.
@@ -80,7 +80,7 @@ namespace Sunflower.Finance
         {
             var index = line.IndexOf(SeparatorCharacter);
             var code = line.Substring(0, index);
-            var name = line.Substring(index + 1);
+            var name = line.Substring(index + 1).Trim(EscapeCharacter);
 
             return (code, name);
         }
@@ -106,8 +106,8 @@ namespace Sunflower.Finance
         /// Reads the next line that represents an entry in the Quandl Code File.
         /// Might contain linebreaks if escaped correctly.
         /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
+        /// <param name="reader">Reader to read Quandl code file line by line.</param>
+        /// <returns>The next line that represents an entry (might contain linebreaks by escaping).</returns>
         private string ReadLine(StreamReader reader)
         {
             var totalLine = string.Empty;
@@ -117,10 +117,10 @@ namespace Sunflower.Finance
             // escape characters are present (escapes the linebreak).
             while ((line = reader.ReadLine()) != null)
             {
-                totalLine += line;
+                totalLine += " " + line;
                 if (totalLine.Count(c => c == EscapeCharacter) % 2 == 0)
                 {
-                    return totalLine;
+                    return totalLine.Trim();
                 }
             }
 

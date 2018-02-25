@@ -23,11 +23,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Business.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.App.Server.Tests", "Sunflower.App.Server.Tests\Sunflower.App.Server.Tests.csproj", "{9F094F56-1317-4D42-860F-68175CAD46D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Finance.Contracts", "Sunflower.Finance.Contracts\Sunflower.Finance.Contracts.csproj", "{C5E47317-A075-49C6-ABF4-981DAD23E516}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Finance.Contracts", "Sunflower.Finance.Contracts\Sunflower.Finance.Contracts.csproj", "{C5E47317-A075-49C6-ABF4-981DAD23E516}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Finance", "Sunflower.Finance\Sunflower.Finance.csproj", "{0CE4F457-1CF4-45E5-8B1A-6CA9CC50D274}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Finance", "Sunflower.Finance\Sunflower.Finance.csproj", "{0CE4F457-1CF4-45E5-8B1A-6CA9CC50D274}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Finance.Autofac", "Sunflower.Finance.Autofac\Sunflower.Finance.Autofac.csproj", "{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sunflower.Finance.Autofac", "Sunflower.Finance.Autofac\Sunflower.Finance.Autofac.csproj", "{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sunflower.Finance.Tests", "Sunflower.Finance.Tests\Sunflower.Finance.Tests.csproj", "{51FEB705-1676-4EBE-BCFA-FB641E9BF391}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AEAB90B-0C2C-4D07-8B91-F0107D768C38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51FEB705-1676-4EBE-BCFA-FB641E9BF391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51FEB705-1676-4EBE-BCFA-FB641E9BF391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51FEB705-1676-4EBE-BCFA-FB641E9BF391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51FEB705-1676-4EBE-BCFA-FB641E9BF391}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
