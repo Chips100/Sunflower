@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Sunflower.Finance.Tests
 {
+    /// <summary>
+    /// Tests for the QuandlCodeFileReader.
+    /// </summary>
     [TestClass]
     public class QuandlCodeFileReaderTests
     {

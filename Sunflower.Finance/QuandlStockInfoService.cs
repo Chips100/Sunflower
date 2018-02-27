@@ -61,7 +61,7 @@ namespace Sunflower.Finance
         /// </summary>
         /// <param name="xmlResponse">String with the XML-Response from Quandl.</param>
         /// <returns>The closing value.</returns>
-        private decimal GetValueFromXmlResponse(string xmlResponse)
+        public static decimal GetValueFromXmlResponse(string xmlResponse)
         {
             var xml = XDocument.Parse(xmlResponse);
 
