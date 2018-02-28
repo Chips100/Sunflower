@@ -10,8 +10,9 @@ namespace Sunflower.Data.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterGeneric(typeof(EntityRepository<>)).As(typeof(IEntityRepository<>));
-            builder.RegisterType<SunflowerStorageCreator>().As<IStorageCreator>();
+            builder.RegisterType<EntityQuerySource>().As<IEntityQuerySource>().SingleInstance();
+            builder.RegisterType<EntityRepositoryFactory>().As<IEntityRepositoryFactory>().SingleInstance();
+            builder.RegisterType<SunflowerStorageCreator>().As<IStorageCreator>().SingleInstance();
         }
     }
 }

@@ -12,21 +12,16 @@ namespace Sunflower.Business.Transactions
     /// </summary>
     public sealed class AccountTransactionsAggregator
     {
-        private readonly IEntityRepository<ContextFreeTransaction> _contextFreeTransactionRepository;
-        private readonly IEntityRepository<StockTransaction> _stockTransactionRepository;
+        private readonly IEntityQuerySource _entityQuerySource;
         private readonly TransactionsMapper _mapper = new TransactionsMapper();
 
         /// <summary>
         /// Creates an AccountTransactionsAggregator.
         /// </summary>
-        /// <param name="contextFreeTransactionRepository">Repository to query ContextFreeTransactions of an account.</param>
-        /// <param name="stockTransactionRepository">Repository to query StockTransactions of an account.</param>
-        public AccountTransactionsAggregator(
-            IEntityRepository<ContextFreeTransaction> contextFreeTransactionRepository,
-            IEntityRepository<StockTransaction> stockTransactionRepository)
+        /// <param name="entityQuerySource">EntityQuerySource to run queries against the persistent storage.</param>
+        public AccountTransactionsAggregator(IEntityQuerySource entityQuerySource)
         {
-            _contextFreeTransactionRepository = contextFreeTransactionRepository;
-            _stockTransactionRepository = stockTransactionRepository;
+            _entityQuerySource = entityQuerySource;
         }
 
         /// <summary>
@@ -37,8 +32,8 @@ namespace Sunflower.Business.Transactions
         public async Task<AggregationResult> AggregateTransactionsOfAccount(int accountId)
         {
             // Query all transactions of the account.
-            var contextFreeTransactions = await _contextFreeTransactionRepository.Query(q => q.Where(x => x.AccountId == accountId));
-            var stockTransactions = await _stockTransactionRepository.Query(q => q.Where(x => x.AccountId == accountId));
+            var contextFreeTransactions = await _entityQuerySource.Query(q => q.Get<ContextFreeTransaction>().Where(x => x.AccountId == accountId));
+            var stockTransactions = await _entityQuerySource.Query(q => q.Get<StockTransaction>().Where(x => x.AccountId == accountId));
 
             // Map those transactions to AggregationItems.
             var aggregationItems = contextFreeTransactions.Select(_mapper.Map)

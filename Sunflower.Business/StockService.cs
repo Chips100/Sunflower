@@ -1,4 +1,5 @@
 ﻿using Sunflower.Business.Contracts;
+using Sunflower.Business.Extensions;
 using Sunflower.Business.Transactions;
 using Sunflower.Data.Contracts;
 using Sunflower.Entities;
@@ -12,24 +13,24 @@ namespace Sunflower.Business
 {
     public sealed class StockService : IStockService
     {
+        private readonly IEntityQuerySource _entityQuerySource;
+        private readonly IEntityRepositoryFactory _entityRepositoryFactory;
         private AccountTransactionsAggregator _accountTransactionsAggregator;
-        private IEntityRepository<Stock> _stockRepository;
         private IStockInfoService _stockInfoService;
-        private IEntityRepository<StockTransaction> _stockTransactionRepository;
 
         /// <summary>
         /// Creates a StockService.
         /// </summary>
+        /// <param name="entityQuerySource">EntityQuerySource to run queries against the persistent storage.</param>
+        /// <param name="entityRepositoryFactory">EntityRepositoryFactory to make changes to the persistent storage.</param>
         /// <param name="accountTransactionsAggregator"></param>
-        /// <param name="stockRepository"></param>
-        /// <param name="stockTransactionRepository"></param>
         /// <param name="stockInfoService"></param>
-        public StockService(AccountTransactionsAggregator accountTransactionsAggregator, IEntityRepository<Stock> stockRepository, IEntityRepository<StockTransaction> stockTransactionRepository, IStockInfoService stockInfoService)
+        public StockService(IEntityQuerySource entityQuerySource, IEntityRepositoryFactory entityRepositoryFactory, AccountTransactionsAggregator accountTransactionsAggregator, IStockInfoService stockInfoService)
         {
-            _stockRepository = stockRepository;
+            _entityQuerySource = entityQuerySource;
+            _entityRepositoryFactory = entityRepositoryFactory;
             _stockInfoService = stockInfoService;
             _accountTransactionsAggregator = accountTransactionsAggregator;
-            _stockTransactionRepository = stockTransactionRepository;
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Sunflower.Business
         public async Task BuyShares(int accountId, int stockId, int sharesCount, decimal? maxShareValue)
         {
             var accountStatus = await _accountTransactionsAggregator.AggregateTransactionsOfAccount(accountId);
-            var stock = await _stockRepository.GetById(stockId);
+            var stock = await _entityQuerySource.GetById<Stock>(stockId);
             var shareValue = await _stockInfoService.GetCurrentShareValue(stock);
 
             if (shareValue > maxShareValue)
@@ -57,13 +58,16 @@ namespace Sunflower.Business
                 throw new Exception("Zu wenig guthaben");
             }
 
-            await _stockTransactionRepository.Create(new StockTransaction
+            await _entityRepositoryFactory.Use(repository =>
             {
-                AccountId = accountId,
-                SharesCount = sharesCount,
-                ShareValue = shareValue,
-                TransactionTimestamp = DateTime.UtcNow,
-                StockId = stockId
+                repository.Add(new StockTransaction
+                {
+                    AccountId = accountId,
+                    SharesCount = sharesCount,
+                    ShareValue = shareValue,
+                    TransactionTimestamp = DateTime.UtcNow,
+                    StockId = stockId
+                });
             });
         }
 
@@ -74,8 +78,8 @@ namespace Sunflower.Business
         /// <returns>A task that will complete with the matched stocks.</returns>
         public async Task<IEnumerable<Stock>> SearchStocks(string searchTerm)
         {
-            return await _stockRepository.Query(q =>
-                q.Where(s => s.Name.Contains(searchTerm)));
+            return await _entityQuerySource.Query(q =>
+                q.Get<Stock>().Where(s => s.Name.Contains(searchTerm)));
         }
 
         /// <summary>

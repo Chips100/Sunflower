@@ -10,9 +10,9 @@ namespace Sunflower.Finance.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<QuandlStockInfoService>().As<IStockInfoService>();
-            builder.RegisterType<QuandlStockQueryService>().As<IStockQueryService>();
-            builder.RegisterType<QuandlCodesProvider>().SingleInstance();
+            builder.RegisterType<QuandlStockInfoService>().As<IStockInfoService>().SingleInstance();
+            builder.RegisterType<QuandlStockQueryService>().As<IStockQueryService>().SingleInstance();
+            builder.RegisterType<QuandlCodesProvider>().SingleInstance().SingleInstance();
         }
     }
 }

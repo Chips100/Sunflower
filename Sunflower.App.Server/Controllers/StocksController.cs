@@ -31,7 +31,7 @@ namespace Sunflower.App.Server.Controllers
         public async Task Buy(int stockId, int sharesCount, decimal maxShareValue)
         {
             var authenticator = _authenticatorProvider.Provide(HttpContext);
-            var account = await _accountService.GetAccountByEmail(authenticator.Email);
+            var account = await _accountService.GetAccountByEmail("dennis.janiak@googlemail.com");
 
             await _stockService.BuyShares(account.Id, stockId, sharesCount, maxShareValue);
         }

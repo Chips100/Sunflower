@@ -1,5 +1,6 @@
 ﻿using Sunflower.Business.Contracts;
 using Sunflower.Business.Exceptions;
+using Sunflower.Business.Extensions;
 using Sunflower.Business.Security;
 using Sunflower.Data.Contracts;
 using Sunflower.Entities;
@@ -14,17 +15,18 @@ namespace Sunflower.Business
     /// </summary>
     public class AccountService : IAccountService
     {
-        private readonly IEntityRepository<Account> _accountRepository;
-        private readonly IEntityRepository<ContextFreeTransaction> _contextFreeTransactionRepository;
+        private readonly IEntityQuerySource _entityQuerySource;
+        private readonly IEntityRepositoryFactory _entityRepositoryFactory;
 
         /// <summary>
         /// Creates an AccountService.
         /// </summary>
-        /// <param name="accountRepository">Repository to access stored account entities.</param>
-        public AccountService(IEntityRepository<Account> accountRepository, IEntityRepository<ContextFreeTransaction> contextFreeTransactionRepository)
+        /// <param name="entityQuerySource">EntityQuerySource to run queries against the persistent storage.</param>
+        /// <param name="entityRepositoryFactory">EntityRepositoryFactory to make changes to the persistent storage.</param>
+        public AccountService(IEntityQuerySource entityQuerySource, IEntityRepositoryFactory entityRepositoryFactory)
         {
-            _accountRepository = accountRepository;
-            _contextFreeTransactionRepository = contextFreeTransactionRepository;
+            _entityQuerySource = entityQuerySource;
+            _entityRepositoryFactory = entityRepositoryFactory;
         }
 
         /// <summary>
@@ -35,13 +37,16 @@ namespace Sunflower.Business
         /// <returns>A Task that will complete when the password has been changed.</returns>
         public async Task ChangePassword(int accountId, string newPassword)
         {
-            var account = await _accountRepository.GetById(accountId);
+            var account = await _entityQuerySource.GetById<Account>(accountId);
             var hashedPassword = HashedPassword.CreateFromPlainPassword(newPassword);
 
-            await _accountRepository.Change(account.Id, a =>
+            await _entityRepositoryFactory.Use(repository =>
             {
-                a.PasswordHash = hashedPassword.Hash;
-                a.PasswordSalt = hashedPassword.Salt;
+                repository.Change<Account>(account.Id, a =>
+                {
+                    a.PasswordHash = hashedPassword.Hash;
+                    a.PasswordSalt = hashedPassword.Salt;
+                });
             });
         }
 
@@ -80,21 +85,23 @@ namespace Sunflower.Business
             }
 
             // If not, create new account.
-            var hashedPassword = HashedPassword.CreateFromPlainPassword(password);
-            var account = await _accountRepository.Create(new Account()
+            await _entityRepositoryFactory.Use(repository =>
             {
-                EmailAddress = email,
-                PasswordHash = hashedPassword.Hash,
-                PasswordSalt = hashedPassword.Salt
-            });
+                var hashedPassword = HashedPassword.CreateFromPlainPassword(password);
+                var account = repository.Add(new Account()
+                {
+                    EmailAddress = email,
+                    PasswordHash = hashedPassword.Hash,
+                    PasswordSalt = hashedPassword.Salt
+                });
 
-            // Provide some starting budget for the new account.
-            await _contextFreeTransactionRepository.Create(new ContextFreeTransaction()
-            {
-                AccountId = account.Id,
-                Comment = "Initial",
-                Amount = 10000,
-                TransactionTimestamp = DateTime.UtcNow
+                // Provide some starting budget for the new account.
+                account.ContextFreeTransactions.Add(new ContextFreeTransaction()
+                {
+                    Comment = "Initial",
+                    Amount = 10000,
+                    TransactionTimestamp = DateTime.UtcNow
+                });
             });
         }
         
@@ -115,7 +122,7 @@ namespace Sunflower.Business
         /// <exception cref="EmailNotRegisteredException">Thrown if the account could not be found.</exception>
         private async Task<Account> GetAccountByEmail(string email, bool suppressException)
         {
-            var account = await _accountRepository.QueryFirstOrDefault(q => q
+            var account = await _entityQuerySource.FirstOrDefault(q => q.Get<Account>()
                 .Where(a => string.Equals(a.EmailAddress, email, StringComparison.OrdinalIgnoreCase)));
 
             if (!suppressException && account == null)
